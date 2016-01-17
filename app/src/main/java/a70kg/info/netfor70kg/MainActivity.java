@@ -5,22 +5,23 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
-import a70kg.info.netfor70kg.net.core.NetFor70kg;
-import a70kg.info.netfor70kg.net.core.RequestQueue;
-import a70kg.info.netfor70kg.net.request.Request;
-import a70kg.info.netfor70kg.net.request.StringRequest;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
 
 public class MainActivity extends AppCompatActivity {
+    TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        textView = (TextView) findViewById(R.id.tv_content);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -34,18 +35,24 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        RequestQueue queue = NetFor70kg.newRequestQueue();
+        com.android.volley.RequestQueue queue = Volley.newRequestQueue(this);
 
-        StringRequest request = new StringRequest(Request.HttpMethod.GET, "http://www.baidu.com",
-                new Request.RequestListener<String>() {
+        com.android.volley.toolbox.StringRequest request = new com.android.volley.toolbox.StringRequest("http://70kg.info", new Response.Listener<String>() {
 
-                    @Override
-                    public void onComplete(int stCode, String response, String errMsg) {
-                        Log.e("onComplete", response);
-                    }
-                });
+            @Override
+            public void onResponse(String response) {
+                textView.setText(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
 
-        queue.addRequest(request);
+            }
+        });
+
+        queue.add(request);
+
+
     }
 
     @Override
